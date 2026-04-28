@@ -378,32 +378,20 @@ if data_belanja:
 else:
     st.info("Data belanja tidak tersedia.")
     
-for sumber in df_belanja['Sumber'].unique():
-    st.markdown(f"### 📦 Supplier: {sumber.upper()}")
 
-    df_sup = df_belanja[df_belanja['Sumber'] == sumber]
+# ==========================================
+# AKHIR TABEL 3
+# ==========================================
 
-    df_pivot_sup = df_sup.groupby(
-        ['Nama Bahan', 'Hari']
-    )['Kebutuhan (Kg)'].sum().unstack(fill_value=0)
-
-    df_pivot_sup[f'Total {JUMLAH_HARI} Hari (Kg)'] = df_pivot_sup.sum(axis=1)
-
-    st.dataframe(df_pivot_sup.style.format("{:.2f}"), use_container_width=True)
-
-            # ==========================================
-            # AKHIR TABEL 3
-            # ==========================================
-
-            # Menghitung total biaya dari menu yang final terpilih
-            total_biaya_aktual = 0
-            for t in HARI:
-                for i in menu_list:
-                    total_biaya_aktual += biaya_dict[i] * N_SISWA * value(x[i][t])
+# Menghitung total biaya dari menu yang final terpilih
+total_biaya_aktual = 0
+    for t in HARI:
+        for i in menu_list:
+                total_biaya_aktual += biaya_dict[i] * N_SISWA * value(x[i][t])
             
-            # Teks metric otomatis
-            st.metric(label=f"Total Biaya {JUMLAH_HARI} Hari", value=f"Rp {total_biaya_aktual:,.0f}")
+        # Teks metric otomatis
+        st.metric(label=f"Total Biaya {JUMLAH_HARI} Hari", value=f"Rp {total_biaya_aktual:,.0f}")
 
-        else:
-            st.error("❌ Model Infeasible: Tidak ada kombinasi menu yang memenuhi syarat.")
-            st.info("Saran perbaikan: 1) Naikkan Budget, 2) Periksa stok bahan di gudang untuk jumlah siswa tersebut, atau 3) Longgarkan target gizi.")
+else:
+        st.error("❌ Model Infeasible: Tidak ada kombinasi menu yang memenuhi syarat.")
+        st.info("Saran perbaikan: 1) Naikkan Budget, 2) Periksa stok bahan di gudang untuk jumlah siswa tersebut, atau 3) Longgarkan target gizi.")

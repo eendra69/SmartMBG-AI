@@ -116,6 +116,7 @@ class PriceSelectionAgent:
 # PRICE AGENT ACTIVATION
 price_agent = PriceSelectionAgent(df_prices)
 df_best_price = price_agent.select_best_price()
+id_to_nama = df_menu.set_index('id_menu')['nama_menu'].to_dict()
 df_recipe['nama_menu'] = df_recipe['id_menu'].map(id_to_nama)
 
 # Merge dengan recipe

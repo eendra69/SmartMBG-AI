@@ -358,13 +358,18 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
                         berat = row['berat_per_porsi']
 
                         kebutuhan_kg = (berat * N_SISWA) / 1000
+                        
+                        harga = row.get('harga_terpilih', 0)
 
                         data_belanja.append({
                             "Nama Bahan": bahan,
                             "Hari": t,
                             "Sumber": sumber,
-                            "Kebutuhan (Kg)": kebutuhan_kg
-                        })
+                            "Kebutuhan (Kg)": kebutuhan_kg,
+                            "Harga per Kg": harga,
+                            "Total Biaya (Rp)": kebutuhan_kg * harga
+
+
 # ================================
 # BUILD DATAFRAME
 # ================================
@@ -379,6 +384,7 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
                     st.markdown(f"### 📦 Supplier: {sumber.upper()}")
 
                     df_sup = df_belanja[df_belanja['Sumber'] == sumber]
+                    total_biaya_supplier = df_sup['Total Biaya (Rp)'].sum()
 
                     df_pivot = df_sup.groupby(
                         ['Nama Bahan', 'Hari']
@@ -392,7 +398,9 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
                     df_pivot[f'Total {JUMLAH_HARI} Hari (Kg)'] = df_pivot.sum(axis=1)
 
                     st.dataframe(df_pivot.style.format("{:.2f}"), use_container_width=True)
-
+                    st.markdown(
+                        f"💰 **Total Biaya dari {sumber.upper()}: Rp {total_biaya_supplier:,.0f}**"
+                    )
             else:
                 st.info("Data belanja tidak tersedia.")      
 

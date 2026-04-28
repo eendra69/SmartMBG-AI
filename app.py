@@ -57,10 +57,81 @@ PENALTI_GIZI = st.sidebar.number_input("Penalti per poin selisih target gizi (Rp
 PENALTI_LEFTOVER = st.sidebar.number_input("Penalti per 1% sisa makanan (Rp)", min_value=0.0, value=100.0)
 
 # ==========================================
+# Agen AI Pemilah harga
+# ==========================================
+class PriceSelectionAgent:
+    def __init__(self, df_prices):
+        self.df = df_prices.copy()
+
+    def clean_prices(self, row):
+        """
+        Ambil semua harga valid (>0 dan bukan NaN)
+        """
+        harga_list = [
+            row.get('harga koperasi', None),
+            row.get('harga pasar', None),
+            row.get('harga vendor lokal', None)
+        ]
+
+        valid_prices = [
+            h for h in harga_list 
+            if pd.notna(h) and h > 0
+        ]
+
+        return valid_prices
+
+    def select_best_price(self):
+        """
+        Pilih harga termurah per bahan
+        """
+        best_prices = []
+
+        for _, row in self.df.iterrows():
+            valid_prices = self.clean_prices(row)
+
+            if len(valid_prices) == 0:
+                harga_terpilih = 0  # fallback
+                sumber = "tidak tersedia"
+            else:
+                harga_terpilih = min(valid_prices)
+
+                if harga_terpilih == row.get('harga koperasi'):
+                    sumber = "koperasi"
+                elif harga_terpilih == row.get('harga pasar'):
+                    sumber = "pasar"
+                else:
+                    sumber = "vendor lokal"
+
+            best_prices.append({
+                "nama bahan": row['nama bahan'],
+                "harga_terpilih": harga_terpilih,
+                "sumber_harga": sumber
+            })
+
+        return pd.DataFrame(best_prices)
+
+# ==========================================
 # PRA-PEMROSESAN DATA
 # ==========================================
-df_recipe_price = pd.merge(df_recipe, df_prices, left_on='nama_bahan', right_on='nama bahan', how='left')
-df_recipe_price['biaya_bahan'] = (df_recipe_price['berat_per_porsi'] / 1000) * df_recipe_price['harga pasar']
+# PRICE AGENT ACTIVATION
+price_agent = PriceSelectionAgent(df_prices)
+df_best_price = price_agent.select_best_price()
+
+# Merge dengan recipe
+df_recipe_price = pd.merge(
+    df_recipe, 
+    df_best_price, 
+    left_on='nama_bahan', 
+    right_on='nama bahan', 
+    how='left'
+)
+
+# Hitung biaya pakai harga terbaik
+df_recipe_price['biaya_bahan'] = (
+    df_recipe_price['berat_per_porsi'] / 1000
+) * df_recipe_price['harga_terpilih']
+
+
 biaya_per_menu = df_recipe_price.groupby('id_menu')['biaya_bahan'].sum().to_dict()
 
 df_recipe_nutrisi = pd.merge(df_recipe, df_ingredients, left_on='nama_bahan', right_on='nama bahan', how='left')

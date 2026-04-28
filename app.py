@@ -378,19 +378,19 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
             else:
                 st.info("Data belanja tidak tersedia.")
 
-# ==========================================
-# AKHIR TABEL 3
-# ==========================================
+            # ==========================================
+            # AKHIR TABEL 3
+            # ==========================================
 
-# Menghitung total biaya dari menu yang final terpilih
-total_biaya_aktual = 0
-for t in HARI:
-    for i in menu_list:
-        total_biaya_aktual += biaya_dict[i] * N_SISWA * value(x[i][t])
+            # Menghitung total biaya dari menu yang final terpilih
+            total_biaya_aktual = 0
+            for t in HARI:
+                for i in menu_list:
+                    total_biaya_aktual += biaya_dict[i] * N_SISWA * value(x[i][t])
             
-        # Teks metric otomatis
-        st.metric(label=f"Total Biaya {JUMLAH_HARI} Hari", value=f"Rp {total_biaya_aktual:,.0f}")
+            # Teks metric otomatis
+            st.metric(label=f"Total Biaya {JUMLAH_HARI} Hari", value=f"Rp {total_biaya_aktual:,.0f}")
 
-else:
-        st.error("❌ Model Infeasible: Tidak ada kombinasi menu yang memenuhi syarat.")
-        st.info("Saran perbaikan: 1) Naikkan Budget, 2) Periksa stok bahan di gudang untuk jumlah siswa tersebut, atau 3) Longgarkan target gizi.")
+        else:
+            st.error("❌ Model Infeasible: Tidak ada kombinasi menu yang memenuhi syarat.")
+            st.info("Saran perbaikan: 1) Naikkan Budget, 2) Periksa stok bahan di gudang untuk jumlah siswa tersebut, atau 3) Longgarkan target gizi.")

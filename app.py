@@ -345,7 +345,7 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
                 for m in menu_hari_ini:
                     resep_m = df_recipe_price[df_recipe_price['nama_menu'] == m]
 
-                        for _, row in resep_m.iterrows():
+                    for _, row in resep_m.iterrows():
                         bahan = row['nama_bahan']
                         sumber = row['sumber_harga']
                         berat_per_porsi = row['berat_per_porsi']

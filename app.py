@@ -385,9 +385,9 @@ else:
 
 # Menghitung total biaya dari menu yang final terpilih
 total_biaya_aktual = 0
-    for t in HARI:
-        for i in menu_list:
-                total_biaya_aktual += biaya_dict[i] * N_SISWA * value(x[i][t])
+for t in HARI:
+    for i in menu_list:
+        total_biaya_aktual += biaya_dict[i] * N_SISWA * value(x[i][t])
             
         # Teks metric otomatis
         st.metric(label=f"Total Biaya {JUMLAH_HARI} Hari", value=f"Rp {total_biaya_aktual:,.0f}")

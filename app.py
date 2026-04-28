@@ -368,7 +368,7 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
                             "Kebutuhan (Kg)": kebutuhan_kg,
                             "Harga per Kg": harga,
                             "Total Biaya (Rp)": kebutuhan_kg * harga
-
+                        })
 
 # ================================
 # BUILD DATAFRAME

@@ -340,7 +340,10 @@ st.subheader("🛒 Tabel 3: Kebutuhan Belanja per Sumber Supplier")
 data_belanja = []
 
 for t in HARI:
-    menu_hari_ini = [i for i in menu_list if value(x[i][t]) == 1]
+    menu_hari_ini = [
+    i for i in menu_list 
+    if x[i][t].varValue is not None and x[i][t].varValue > 0.5
+]
 
     for m in menu_hari_ini:
         resep_m = df_recipe_price[df_recipe_price['nama_menu'] == m]

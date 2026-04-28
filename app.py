@@ -335,52 +335,48 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
 # ==========================================
 # TABEL 3: BELANJA BERDASARKAN SUMBER
 # ==========================================
-st.subheader("🛒 Tabel 3: Kebutuhan Belanja per Sumber Supplier")
+            st.subheader("🛒 Tabel 3: Kebutuhan Belanja per Sumber Supplier")
 
-data_belanja = []
+            data_belanja = []
 
-for t in HARI:
-    menu_hari_ini = [
-    i for i in menu_list 
-    if x[i][t].varValue is not None and x[i][t].varValue > 0.5
-]
+            for t in HARI:
+                menu_hari_ini = [i for i in menu_list if value(x[i][t]) == 1]
 
-    for m in menu_hari_ini:
-        resep_m = df_recipe_price[df_recipe_price['nama_menu'] == m]
+                for m in menu_hari_ini:
+                    resep_m = df_recipe_price[df_recipe_price['nama_menu'] == m]
 
-        for _, row in resep_m.iterrows():
-            bahan = row['nama_bahan']
-            sumber = row['sumber_harga']
-            berat_per_porsi = row['berat_per_porsi']
+                        for _, row in resep_m.iterrows():
+                        bahan = row['nama_bahan']
+                        sumber = row['sumber_harga']
+                        berat_per_porsi = row['berat_per_porsi']
 
-            kebutuhan_kg = (berat_per_porsi * N_SISWA) / 1000
+                        kebutuhan_kg = (berat_per_porsi * N_SISWA) / 1000
 
-            data_belanja.append({
-                "Nama Bahan": bahan,
-                "Hari": t,
-                "Sumber": sumber,
-                "Kebutuhan (Kg)": kebutuhan_kg
-            })
+                        data_belanja.append({
+                            "Nama Bahan": bahan,
+                            "Hari": t,
+                            "Sumber": sumber,
+                            "Kebutuhan (Kg)": kebutuhan_kg
+                        })
 
-if data_belanja:
-    df_belanja = pd.DataFrame(data_belanja)
+            if data_belanja:
+                df_belanja = pd.DataFrame(data_belanja)
 
-    # Pivot: bahan + sumber → hari
-    df_pivot = df_belanja.groupby(
-        ['Sumber', 'Nama Bahan', 'Hari']
-    )['Kebutuhan (Kg)'].sum().unstack(fill_value=0)
+                # Pivot: bahan + sumber → hari
+                df_pivot = df_belanja.groupby(
+                ['Sumber', 'Nama Bahan', 'Hari']
+                )['Kebutuhan (Kg)'].sum().unstack(fill_value=0)
 
-    # Urutkan kolom hari
-    kolom_hari_ada = [hari for hari in HARI if hari in df_pivot.columns]
-    df_pivot = df_pivot[kolom_hari_ada]
+                # Urutkan kolom hari
+                kolom_hari_ada = [hari for hari in HARI if hari in df_pivot.columns]
+                df_pivot = df_pivot[kolom_hari_ada]
 
-    # Total mingguan
-    df_pivot[f'Total {JUMLAH_HARI} Hari (Kg)'] = df_pivot.sum(axis=1)
+                # Total mingguan
+                df_pivot[f'Total {JUMLAH_HARI} Hari (Kg)'] = df_pivot.sum(axis=1)
 
-    st.dataframe(df_pivot.style.format("{:.2f}"), use_container_width=True)
-else:
-    st.info("Data belanja tidak tersedia.")
-    
+                st.dataframe(df_pivot.style.format("{:.2f}"), use_container_width=True)
+            else:
+                st.info("Data belanja tidak tersedia.")
 
 # ==========================================
 # AKHIR TABEL 3
